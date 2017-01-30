@@ -1,0 +1,36 @@
+{
+  "name": "emar",
+  "version": "1.0.0",
+  "description": "emar survey robot",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/khous/emar.git"
+  },
+  "keywords": [
+    "emar",
+    "drg",
+    "uw"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/khous/emar/issues"
+  },
+  "homepage": "https://github.com/khous/emar#readme",
+  "devDependencies": {
+    "bootstrap": "^3.3.7",
+    "express": "^4.14.1",
+    "gulp": "^3.9.1",
+    "gulp-browserify": "^0.5.1",
+    "gulp-sass": "^3.1.0",
+    "jquery": "^3.1.1"
+  },
+  "dependencies": {
+    "express": "^4.14.1"
+  }
+}
