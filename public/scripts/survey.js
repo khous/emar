@@ -15,7 +15,7 @@ module.exports = {
      */
     getHtml: function (surveyData) {
         return "<div class='row'>" +
-            "<div class='survey col-xs-6 col-xs-offset-2'>" +
+            "<div class='survey col-xs-6 col-xs-offset-3'>" +
                 // "<audio src='" + surveyData.soundfilePath + "'></audio>" +
                 surveyData.q +
                 "<input class='leich' type='range' min='0' max='100' step='1'/>" +
@@ -26,7 +26,7 @@ module.exports = {
 
     response: function (res, continueSurvey) {
         return  "<div class='response row'>" +
-                    "<div class='survey col-xs-6 col-xs-offset-2'>" +
+                    "<div class='survey col-xs-6 col-xs-offset-3'>" +
                         "<div>" + res + "</div>" +
                     "</div>" +
                 "</div>"
@@ -39,7 +39,7 @@ module.exports = {
                     "</div>" +
                 "</div>" +
                 "<div class='greeting-text row hidden'>" +
-                    "<div class='survey col-xs-6 col-xs-offset-2'>" +
+                    "<div class='survey col-xs-6 col-xs-offset-3'>" +
                         "<div>Hi, nice to meet you! I'm EMAR. <br />" +
                             "I'm excited to hear about your day. May I ask you a question?</div>" +
                         "<button class='yes btn btn-default'>Yes</button><button class='no btn btn-default'>No</button>" +
