@@ -1,3 +1,7 @@
+/**
+ * Main control flow for the survey. Lots of nested callbacks. Quite messy.
+ * This should be refactored.
+ */
 var $ = require("jquery");
 var survey = require("./survey");
 var main;
@@ -10,9 +14,14 @@ var responses = [
     "Glad to hear that."
 ];
 
+/**
+ * Though this is static, this is a good starting point for how these can be stored on the backend. In addition to what's
+ * there currently, we need urls to sound files. I guess that will be per response.
+ * @type {[*]}
+ */
 var questions = [{
     q: "How stressed do you feel right now?",
-    resp: [
+    resp: [//This one is slightly different from the others. Mainly it's inverted.
         "No stress, That's great to hear!",
         "Glad to hear that.",
         "I'm feeling about the same.",
@@ -26,6 +35,9 @@ var questions = [{
     resp: responses
 }];
 
+/**
+ * Display the greeting view.
+ */
 function greetings () {
     count = 0;
     main.html(survey.greeting());
@@ -45,14 +57,15 @@ function greetings () {
         endSurvey("That's okay. Find me later if you feel like talking.");
     });
 
-
     //HI can I axe you a question?
     //If yes, do ask
     //else say it's fine when it's really not
 }
 
+/**
+ * Ask the current question, which is indexed by the global 'count'. (It's not really global thanks to browserify)
+ */
 function askQuestion () {
-
     main.html(survey.getHtml(questions[count]));
     main.find(".survey button").click(handleQuestionAnswered);
 }
@@ -63,6 +76,10 @@ function map (i_end, out_end, i_value) {
     return Math.round(squashedValue);
 }
 
+/**
+ * End the survey with the supplied message. Reset vars
+ * @param msg The message to display
+ */
 function endSurvey (msg) {
     count = 0;
     main.html(msg);
@@ -72,6 +89,9 @@ function endSurvey (msg) {
     }, 3000);
 }
 
+/**
+ * Respond when the user accepts answering another question
+ */
 function another () {
     main.find(".survey").html(
         "Thanks for sharing that with me. Would you like to answer another question? <br />" +
@@ -89,6 +109,9 @@ function another () {
     });
 }
 
+/**
+ * Handle the user response. Show our own response.
+ */
 function handleQuestionAnswered () {
     //squash 0-99 into 0 - 3 to select appropriate response
     //show response
@@ -113,6 +136,9 @@ function handleQuestionAnswered () {
 
 }
 
+/**
+ * Initialize the survey, first showing the greeting.
+ */
 $(function () {
     main = $("#main-container");
     greetings();
