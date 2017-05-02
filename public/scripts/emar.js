@@ -6,12 +6,31 @@ var $ = require("jquery");
 var survey = require("./survey");
 var main;
 var count = 0;
+var allOn = [
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1]
+];
 
 var responses = [
-    "Oh no, I'm sorry to hear that.",
-    "I'm feeling about the same.",
-    "Glad to hear that.",
-    "Glad to hear that."
+    {
+        txt: "Oh no, I'm sorry to hear that.",
+        eyes: allOn
+    }, {
+        txt: "I'm feeling about the same.",
+        eyes: allOn
+    }, {
+        txt: "Glad to hear that.",
+        eyes: allOn
+    }, {
+        txt: "Glad to hear that.",
+        eyes: allOn
+    }
 ];
 
 /**
@@ -19,18 +38,21 @@ var responses = [
  * there currently, we need urls to sound files. I guess that will be per response.
  * @type {[*]}
  */
-var questions = [{
+var questions = [{//XHR get dis
+    eyes: allOn,
     q: "How stressed do you feel right now?",
     resp: [//This one is slightly different from the others. Mainly it's inverted.
-        "No stress, That's great to hear!",
-        "Glad to hear that.",
-        "I'm feeling about the same.",
-        "Oh no, I'm sorry to hear that."
+        { txt: "No stress, That's great to hear!", eyes: allOn },
+        { txt: "Glad to hear that.", eyes: allOn },
+        { txt: "I'm feeling about the same.", eyes: allOn },
+        { txt: "Oh no, I'm sorry to hear that.", eyes: allOn }
     ]
 }, {
+    eyes: allOn,
     q: "What is your energy level right now?",
     resp: responses
 }, {
+    eyes: allOn,
     q: "How is your mood right now?",
     resp: responses
 }];
@@ -118,7 +140,7 @@ function handleQuestionAnswered () {
     //ask if we may have another
     var resps = questions[count].resp;
     var responseValue = map(99, resps.length - 1, main.find(".leich").val());
-    var response = resps[responseValue];
+    var response = resps[responseValue].txt;
     var cont = (count + 1) < questions.length;
     main.html(survey.response(response, cont));
     setTimeout(function () {
