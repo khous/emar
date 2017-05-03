@@ -149,10 +149,19 @@ function handleQuestionAnswered () {
     $.post("/responses/", {
         _id: question._id,
         value: +respVal
-    }, function (result) { console.log(result); }, "application/json");
+    }, function () { });
 
     var responseValue = map(99, resps.length - 1, respVal);
-    var response = resps[responseValue].txt;
+    var respObject = resps[responseValue];
+
+    var eyes = "";
+
+    respObject.eyes.forEach(function (i) {
+        eyes += i.join("");
+    });
+
+    $.post("/eyes/", { eyes: eyes }, function () { });
+    var response = respObject.txt;
     var cont = (count + 1) < questions.length;
     main.html(survey.response(response, cont));
     setTimeout(function () {

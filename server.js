@@ -41,11 +41,13 @@ DB(function (err, db) {
     app.post("/eyes/", function (req, res) {
         var eyes = req.body.eyes;
 
-        if (!Array.isArray(eyes)) {
-            return res.status(400).json({ err: "Eyes must be an array" });
+        if (eyes.length !== 64) {
+            return res.status(400).json({ err: "Eyes must be 64 numbers" });
         }
 
+        //TODO, josh put code here. serialData should be in the correct form according to your changes to the readme
         //Do a sys call to set the EYES based on this array
+        return res.status(200).json({ status: "SUCCESS" });
     });
 
     //Just need to aggregate all responses. maybe capture time
