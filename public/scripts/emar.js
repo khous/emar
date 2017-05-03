@@ -6,7 +6,7 @@ var $ = require("jquery");
 var survey = require("./survey");
 var main;
 var count = 0;
-var allOn = [
+/*var allOn = [
     [1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1],
@@ -15,7 +15,8 @@ var allOn = [
     [1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1]
-];
+];*/
+/*
 
 var responses = [
     {
@@ -32,12 +33,14 @@ var responses = [
         eyes: allOn
     }
 ];
+*/
 
 /**
  * Though this is static, this is a good starting point for how these can be stored on the backend. In addition to what's
  * there currently, we need urls to sound files. I guess that will be per response.
  * @type {[*]}
  */
+/*
 var questions = [{//XHR get dis
     eyes: allOn,
     q: "How stressed do you feel right now?",
@@ -56,6 +59,7 @@ var questions = [{//XHR get dis
     q: "How is your mood right now?",
     resp: responses
 }];
+*/
 
 /**
  * Display the greeting view.
@@ -138,8 +142,16 @@ function handleQuestionAnswered () {
     //squash 0-99 into 0 - 3 to select appropriate response
     //show response
     //ask if we may have another
-    var resps = questions[count].resp;
-    var responseValue = map(99, resps.length - 1, main.find(".leich").val());
+    var question = questions[count];
+    var resps = question.resp;
+    var respVal = main.find(".leich").val();
+
+    $.post("/responses/", {
+        _id: question._id,
+        value: +respVal
+    }, function (result) { console.log(result); }, "application/json");
+
+    var responseValue = map(99, resps.length - 1, respVal);
     var response = resps[responseValue].txt;
     var cont = (count + 1) < questions.length;
     main.html(survey.response(response, cont));
@@ -162,7 +174,9 @@ function handleQuestionAnswered () {
  * Initialize the survey, first showing the greeting.
  */
 $(function () {
-    main = $("#main-container");
-    greetings();
-
+    $.get("/questions/", function (qs) {
+        questions = qs;
+        main = $("#main-container");
+        greetings();
+    });
 });

@@ -8,6 +8,10 @@ var surveys = require("./surveys/surveys");
 var PORT = 1337;//TODO some server config mightbe necessary
 
 app.use(express.static("public"));
+var bp = require("body-parser");
+
+app.use(bp.json());
+app.use(bp.urlencoded({ extended: false }));
 
 var DB = require("./db");
 
@@ -23,8 +27,8 @@ DB(function (err, db) {
     /**
      * Get route for survey data, which is currently hardcoded. (Though this doesn't preclude good collaboration).
      */
-    app.get("/surveys/", function (req, res) {
-        db.collection("questions").find({}, function (err, results) {
+    app.get("/questions/", function (req, res) {
+        db.collection("questions").find({}).toArray(function (err, results) {
             if (err) {
                 res.status(400).json({ err: "something bad happened" });
             } else {
@@ -46,7 +50,7 @@ DB(function (err, db) {
 
     //Just need to aggregate all responses. maybe capture time
     //So post will look like
-    app.post("/response/", function (req, res) {
+    app.post("/responses/", function (req, res) {
         //save the response
         //THat would be their value, and the ID of the question, i guess
         db.collection("responses").insertOne(req.body, function (err) {
