@@ -1,5 +1,5 @@
 @import '../../node_modules/bootstrap/dist/css/bootstrap';
-@import url('https://fonts.googleapis.com/css?family=Baloo');
+@import url('https://fonts.googleapis.com/css?family=Playfair+Display');
 @import './colors.scss';
 
 /*
@@ -9,7 +9,7 @@ body {
   margin-top: 10%;
     background: $color-primary-1;
     font-size: 4em;
-    font-family: 'Baloo', cursive;
+    font-family:'Playfair Display', serif;
   #main-container {
     color: $rgba-complement-4;
     text-align: center;
