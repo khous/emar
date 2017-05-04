@@ -7,7 +7,7 @@ Some boilerplate styles for making the currently utilized UI components match ou
  */
 body {
   margin-top: 10%;
-    background: red !important; // was $color-primary-1;
+    background: $hopbush; // was $color-primary-1;
     font-size: 4em;
     font-family:'Playfair Display', serif;
   #main-container {
