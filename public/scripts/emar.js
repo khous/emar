@@ -1,31 +1,69 @@
+/**
+ * Main control flow for the survey. Lots of nested callbacks. Quite messy.
+ * This should be refactored.
+ */
 var $ = require("jquery");
 var survey = require("./survey");
 var main;
 var count = 0;
+/*var allOn = [
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1]
+];*/
+/*
 
 var responses = [
-    "Oh no, I'm sorry to hear that.",
-    "I'm feeling about the same.",
-    "Glad to hear that.",
-    "Glad to hear that."
+    {
+        txt: "Oh no, I'm sorry to hear that.",
+        eyes: allOn
+    }, {
+        txt: "I'm feeling about the same.",
+        eyes: allOn
+    }, {
+        txt: "Glad to hear that.",
+        eyes: allOn
+    }, {
+        txt: "Glad to hear that.",
+        eyes: allOn
+    }
 ];
+*/
 
-var questions = [{
+/**
+ * Though this is static, this is a good starting point for how these can be stored on the backend. In addition to what's
+ * there currently, we need urls to sound files. I guess that will be per response.
+ * @type {[*]}
+ */
+/*
+var questions = [{//XHR get dis
+    eyes: allOn,
     q: "How stressed do you feel right now?",
-    resp: [
-        "No stress, That's great to hear!",
-        "Glad to hear that.",
-        "I'm feeling about the same.",
-        "Oh no, I'm sorry to hear that."
+    resp: [//This one is slightly different from the others. Mainly it's inverted.
+        { txt: "No stress, That's great to hear!", eyes: allOn },
+        { txt: "Glad to hear that.", eyes: allOn },
+        { txt: "I'm feeling about the same.", eyes: allOn },
+        { txt: "Oh no, I'm sorry to hear that.", eyes: allOn }
     ]
 }, {
+    eyes: allOn,
     q: "What is your energy level right now?",
     resp: responses
 }, {
+    eyes: allOn,
     q: "How is your mood right now?",
     resp: responses
 }];
+*/
 
+/**
+ * Display the greeting view.
+ */
 function greetings () {
     count = 0;
     main.html(survey.greeting());
@@ -45,14 +83,15 @@ function greetings () {
         endSurvey("That's okay. Find me later if you feel like talking.");
     });
 
-
     //HI can I axe you a question?
     //If yes, do ask
     //else say it's fine when it's really not
 }
 
+/**
+ * Ask the current question, which is indexed by the global 'count'. (It's not really global thanks to browserify)
+ */
 function askQuestion () {
-
     main.html(survey.getHtml(questions[count]));
     main.find(".survey button").click(handleQuestionAnswered);
 }
@@ -63,6 +102,10 @@ function map (i_end, out_end, i_value) {
     return Math.round(squashedValue);
 }
 
+/**
+ * End the survey with the supplied message. Reset vars
+ * @param msg The message to display
+ */
 function endSurvey (msg) {
     count = 0;
     main.html(msg);
@@ -72,6 +115,9 @@ function endSurvey (msg) {
     }, 3000);
 }
 
+/**
+ * Respond when the user accepts answering another question
+ */
 function another () {
     main.find(".survey").html(
         "Thanks for sharing that with me. Would you like to answer another question? <br />" +
@@ -89,13 +135,33 @@ function another () {
     });
 }
 
+/**
+ * Handle the user response. Show our own response.
+ */
 function handleQuestionAnswered () {
     //squash 0-99 into 0 - 3 to select appropriate response
     //show response
     //ask if we may have another
-    var resps = questions[count].resp;
-    var responseValue = map(99, resps.length - 1, main.find(".leich").val());
-    var response = resps[responseValue];
+    var question = questions[count];
+    var resps = question.resp;
+    var respVal = main.find(".leich").val();
+
+    $.post("/responses/", {
+        _id: question._id,
+        value: +respVal
+    }, function () { });
+
+    var responseValue = map(99, resps.length - 1, respVal);
+    var respObject = resps[responseValue];
+
+    var eyes = "";
+
+    respObject.eyes.forEach(function (i) {
+        eyes += i.join("");
+    });
+
+    $.post("/eyes/", { eyes: eyes }, function () { });
+    var response = respObject.txt;
     var cont = (count + 1) < questions.length;
     main.html(survey.response(response, cont));
     setTimeout(function () {
@@ -113,8 +179,13 @@ function handleQuestionAnswered () {
 
 }
 
+/**
+ * Initialize the survey, first showing the greeting.
+ */
 $(function () {
-    main = $("#main-container");
-    greetings();
-
+    $.get("/questions/", function (qs) {
+        questions = qs;
+        main = $("#main-container");
+        greetings();
+    });
 });
