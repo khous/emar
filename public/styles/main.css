@@ -4,7 +4,7 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
-@import url("https://fonts.googleapis.com/css?family=Baloo");
+@import url("https://fonts.googleapis.com/css?family=Playfair+Display");
 html {
   font-family: sans-serif;
   -webkit-text-size-adjust: 100%;
@@ -6427,11 +6427,17 @@ button.close {
     display: none !important; } }
 
 /*# sourceMappingURL=bootstrap.css.map */
+/*
+  This is the global color palette. Obviously I'm not an artist. I generated this from paletton.com
+*/
+/*
+Some boilerplate styles for making the currently utilized UI components match our palette.
+ */
 body {
   margin-top: 10%;
-  background: #000000;
+  background: white;
   font-size: 4em;
-  font-family: 'Baloo', cursive; }
+  font-family: 'Playfair Display', serif; }
   body #main-container {
     color: #c3ad82;
     text-align: center; }
@@ -6440,3 +6446,6 @@ body {
       background: #061433;
       color: #C3AD82;
       margin: 30px 10px; }
+
+.btn-default {
+  background: white; }
