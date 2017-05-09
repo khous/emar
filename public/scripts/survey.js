@@ -1,8 +1,7 @@
 /**
  * This file generates the HTML required for a survey
- * Considering moving to a template based renderer. I took this approach to
- * make development simpler up front. That's no longer a concern.
  */
+
 module.exports = {
     /**
      * Let survey data have all the pertinent information required to administer a survey

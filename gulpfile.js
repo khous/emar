@@ -1,7 +1,3 @@
-/**
- * Project gulpfile. Run 'gulp build' to rebuild deployment resources. Currently
- * just javascript and sass files.
- */
 var gulp = require('gulp');
 var browserify = require('gulp-browserify');
 

@@ -1,15 +1,12 @@
 @import '../../node_modules/bootstrap/dist/css/bootstrap';
-@import url('https://fonts.googleapis.com/css?family=Playfair+Display');
+@import url('https://fonts.googleapis.com/css?family=Baloo');
 @import './colors.scss';
 
-/*
-Some boilerplate styles for making the currently utilized UI components match our palette.
- */
 body {
   margin-top: 10%;
     background: white ;//$hopbush; // was $color-primary-1;
     font-size: 4em;
-    font-family:'Playfair Display', serif;
+    font-family: 'Baloo', cursive;
   #main-container {
     color: $rgba-complement-4;
     text-align: center;
