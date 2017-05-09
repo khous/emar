@@ -1,2 +1,3 @@
 public/scripts/built/
 public/styles/**/*.css
+node_modules/
