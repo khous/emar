@@ -18,7 +18,7 @@ app.use(bp.urlencoded({ extended: false }));
  * Get route for home page. This will be a single page app.
  */
 app.get('/home', function (req, res) {
-    res.sendFile(__dirname + "\\public\\cms.html");
+    res.sendFile(__dirname + "/public/cms.html");
 });
 
 app.post("/surveys", function (req, res, next) {
