@@ -8,7 +8,7 @@ var browserify = require('gulp-browserify');
 // Basic usage 
 gulp.task('bfi', function() {
     // Single entry point to browserify 
-    gulp.src('public/scripts/emar.js')
+    gulp.src(['public/scripts/cms.js', 'public/scripts/emar.js'])
         .pipe(browserify({
             insertGlobals : true,
             debug : true

@@ -5,9 +5,9 @@
 /*
 Some boilerplate styles for making the currently utilized UI components match our palette.
  */
-body {
-  margin-top: 10%;
-    background: red; //$hopbush; // was $color-primary-1;
+body.emar {
+    margin-top: 10%;
+    background: $color-primary-2; // was $color-primary-1;
     font-size: 4em;
     font-family:'Playfair Display', serif;
   #main-container {
@@ -27,26 +27,40 @@ body {
   background: white;
 }
 
-*/
-<html>
-  <head>
-    
-<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">  
+body.cms {
+  font-size: 2em;
+  background: white;
+  #main-container {
+    background: white;
+    text-align: left;
 
-    <style>
-      body {
+    .survey-specs input {
+      display: block;
+      margin-bottom: 5px;
+    }
 
-font-family: 'Roboto', sans-serif;
-        font-size: 30px;
+    .questions {
+      input { display: inline; }
+      margin-left: 15px;
+
+      .responses {
+        margin-left: 15px;
       }
-    </style>
-  </head>
-  <body style="background-color:blue;">
-    <div>Hello, I am EMAR</div>
-    
+    }
 
-  </body>
-</html>
+    .eye:last-child { margin-left: 200px; }
+    .eye {
+      display: inline-block;
+      .eye-pixel {
+        height: 30px;
+        width: 30px;
+        display: inline-block;
+        border-radius: 20px;
+        border: 1px solid black;
+        margin: 2px;
+        margin-right: 10px;
+      }
+    }
 
-
-
+  }
+}
