@@ -9,8 +9,8 @@ app.use("/styles", express.static(__dirname + "/public/styles"));
 app.use("/scripts", express.static(__dirname + "/public/scripts"));
 var bp = require("body-parser");
 
-app.use(bp.json());
-app.use(bp.urlencoded({ extended: false }));
+app.use(bp.json({ limit: "50mb" }));
+// app.use(bp.urlencoded({ extended: false }));
 
 DB(function (err, db) {
     /**
@@ -27,12 +27,16 @@ DB(function (err, db) {
             })
         })
         .post(function (req, res, next) {
-            db.collection("surveys").insertOne(req.body, function (err) {
-                if (err) {
-                    return res.status(500).json({ err: "something bad happened" });
-                }
+            var surveys = db.collection("surveys");
 
-                res.status(200).json({ mess: "success" });
+            surveys.removeMany({}, function () {
+                surveys.insertOne(req.body, function (err) {
+                    if (err) {
+                        return res.status(500).json({ err: "something bad happened" });
+                    }
+
+                    res.status(200).json({ mess: "success" });
+                });
             });
         });
 
