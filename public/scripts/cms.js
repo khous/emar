@@ -13,7 +13,7 @@ function Survey () {
     this.valediction = "Thanks for sharing";
     this.anotherQuestion = "Would you like to answer another question?";
 
-    this.addQuestion = function () {
+    this.addQuestion = function (model) {
         //Construct dom, associate model
         var q = new Question();
         q.id = id++;
@@ -23,6 +23,8 @@ function Survey () {
         q.onRemove = function () {
             that.removeQuestion(q.id);
         };
+
+        if (model) { q.setModel(model); }
     };
 
     this.removeQuestion = function (id) {
@@ -36,11 +38,26 @@ function Survey () {
         }
     };
 
+    that.loadSurvey = function (cb) {
+        $.get("/surveys", function (response) {
+            // debugger;
+            that.setModel(response);
+            cb();
+        });
+    };
+
     that.saveSurvey = function () {
         var model = that.getModel();
 
-        $.post("/surveys", model, function () {
-            console.log("what happened?", arguments);
+        $.ajax({
+            url: "/surveys",
+            type: "POST",
+            data: JSON.stringify(model),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(){
+                console.log("what happened?", arguments);
+            }
         });
     };
 
@@ -92,17 +109,24 @@ function Survey () {
     //Maybe a survey should have a name
     that.getModel = function () {
         return {
-            name: "Stress Survey",
-            questions: that.getQuestionModels(),
-            greeting: that.$greetingsInput.val(),
-            greetingSound: "",
+            name:                "Stress Survey",
+            questions:           that.getQuestionModels(),
+            greeting:            that.$greetingsInput.val(),
+            greetingSound:       "",
             anotherQuestionText: that.$anotherQuestionInput.val(),
-            valediction: that.$valedictionInput.val()
+            valediction:         that.$valedictionInput.val()
         };
     };
 
-    that.setModel = function () {
-
+    that.setModel = function (m) {
+        that.$anotherQuestionInput.val(m.anotherQuestionText);
+        that.$greetingsInput.val(m.greeting);
+        that.$valedictionInput.val(m.valediction);
+        //"";
+        //"Stress Survey",
+        m.questions.forEach(function (q) {
+            that.addQuestion(q);
+        });
     };
 }
 
@@ -113,7 +137,7 @@ function Question () {
     this.questionText= "";
     this.questionResponses = [];
 
-    that.addResponse = function () {
+    that.addResponse = function (model) {
         var r = new Response();
         r.id = id++;
         that.$responseContainer.append(r.render());
@@ -122,6 +146,10 @@ function Question () {
         };
 
         that.questionResponses.push(r);
+
+        if (model) {
+            r.setModel(model);
+        }
     };
 
     that.removeResponse = function (id) {
@@ -180,13 +208,18 @@ function Question () {
     //Each question has its own text, sound and an array of responses
     that.getModel = function () {
         return {
+            //TODO soundfile
             text: that.$questionText.val(),
             responses: that.getResponseModels()
         };
     };
 
-    that.setModel = function () {
+    that.setModel = function (m) {
+        that.$questionText.val(m.text);
 
+        m.responses.forEach(function (r) {
+            that.addResponse(r);
+        });
     };
 }
 
@@ -228,8 +261,13 @@ function Response () {
         };
     };
 
-    that.setModel = function () {
+    //Set all those deets. This includes building the eyes
+    that.setModel = function (m) {
+        that.$responseText.val(m.text);
+        that.$responseSoundFile.val(m.sound);
 
+        that.leftEye.setModel(m.leftEye);
+        that.rightEye.setModel(m.rightEye);
     };
 }
 
@@ -314,8 +352,18 @@ function Eye () {
         return out;
     };
 
-    that.setModel = function () {
+    //Receive the fully fleshed out array. Set that, otherwise, initialize a new array for model which is empty
+    that.setModel = function (eyeRay) {
+        if (!Array.isArray(eyeRay)) {
+            return;//We should already have an empty model
+        }
 
+        //otherwise it is an array, update it in the DOM to reflect the incoming model
+        for (var i = 0; i < 8; i++) {
+            for (var j = 0; j < 8; j++) {
+                setColor(that.model[i][j], !!eyeRay[i][j]);
+            }
+        }
     };
 }
 
@@ -335,6 +383,10 @@ $(function () {
 
     var survey =  new Survey();
 
-    cont.append(survey.render());
+    var surveyNode = survey.render();
+
+    survey.loadSurvey(function () {
+        cont.append(surveyNode);
+    });
 
 });
