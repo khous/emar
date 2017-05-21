@@ -42,7 +42,7 @@ DB(function (err, db) {
 
     app.post("/stop-record/", function () {
         if (proc) {
-            proc.kill("SIGTERM");
+            proc.kill("SIGINT");
             proc = undefined;
         }
     });
