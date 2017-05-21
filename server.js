@@ -35,7 +35,7 @@ DB(function (err, db) {
 
     app.post("/record/", function () {
          var d = new Date();
-        proc = exec("avcon -f video4linux2 -r 25 -i /dev/video0 -f alsa -i plughw:U0x460x825 -y ./videos/" + d.toString()  + "-webcam.avi",
+        proc = exec("avconv -f video4linux2 -r 25 -i /dev/video0 -f alsa -i plughw:U0x46d0x825 -y ./videos/" + d.toString()  + "-webcam.avi",
             function (error, stdout, stderr) { });
     });
 
