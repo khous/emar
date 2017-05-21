@@ -43,7 +43,7 @@ DB(function (err, db) {
 
     app.post("/stop-record/", function (req, res) {
         if (proc) {
-            proc.kill("SIGINT");
+            exec("pkill --signal SIGINT avconv");
             proc = undefined;
             console.log("killing it...");
         }
