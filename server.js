@@ -6,14 +6,22 @@ var express = require('express');
 var app = express();
 var surveys = require("./surveys/surveys");
 var PORT = 1337;//TODO some server config mightbe necessary
+var request = require("request");
 
 app.use(express.static("public"));
 var bp = require("body-parser");
-
+var dns = require('dns');
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: false }));
 
 var DB = require("./db");
+
+//Stolen from stackoverflow
+function checkInternet(cb) {
+    dns.lookup('google.com',function(err) {
+        cb(!(err && err.code === "ENOTFOUND"));
+    });
+}
 
 DB(function (err, db) {
 
@@ -27,15 +35,30 @@ DB(function (err, db) {
     /**
      * Get route for survey data, which is currently hardcoded. (Though this doesn't preclude good collaboration).
      */
-    app.get("/questions/", function (req, res) {
-        db.collection("questions").find({}).toArray(function (err, results) {
-            if (err) {
-                res.status(400).json({ err: "something bad happened" });
-            } else {
-                res.status(200).json(results);
+    app.get("/surveys/", function (req, res) {
+        var surveys = db.collection("surveys");
+        checkInternet(function (connected) {
+            if (connected) {
+                //TODO config this url
+                request("http://emar.entrydns.org/surveys", function (err, response, body) {
+                    var survey = JSON.parse(body);
+                    surveys.removeMany({}, function () {
+                        surveys.insertOne(survey, function () {});
+
+                        res.status(200).json(survey);
+                    });
+
+                });
+            } else {//Fall back to my local database
+                surveys.find({}).toArray(function (err, results) {
+                    if (err) {
+                        res.status(400).json({ err: "something bad happened" });
+                    } else {
+                        res.status(200).json(results);
+                    }
+                });
             }
         });
-
     });
 
     app.post("/eyes/", function (req, res) {

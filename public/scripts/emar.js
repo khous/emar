@@ -4,8 +4,25 @@
  */
 var $ = require("jquery");
 var survey = require("./survey");
+var thisSurvey; // to be retrieved from the server
 var main;
 var count = 0;
+var questions = [];
+/**
+ * Turn thing into an array if it isn't
+ * @param thing
+ */
+function arrayify (thing) {
+    return Array.isArray(thing) ? thing : typeof thing !== "undefined" ?  [thing] : [];
+}
+
+function playSoundFromBase64 (snd) {
+    if (!snd) { return; }
+    var aud = new Audio(snd);
+    aud.play();
+    return aud;
+}
+
 /*var allOn = [
     [1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1],
@@ -66,10 +83,11 @@ var questions = [{//XHR get dis
  */
 function greetings () {
     count = 0;
-    main.html(survey.greeting());
-
+    main.html(survey.greeting(thisSurvey));
     main.find("button.hi").click(function () {
         //Unhide greet text
+        playSoundFromBase64(thisSurvey.greetingsSound);
+
         main.find(".greeting-button").hide();
         main.find(".greeting-text").removeClass("hidden");//play greeting audioi
     });
@@ -92,7 +110,9 @@ function greetings () {
  * Ask the current question, which is indexed by the global 'count'. (It's not really global thanks to browserify)
  */
 function askQuestion () {
-    main.html(survey.getHtml(questions[count]));
+    var q = questions[count];
+    playSoundFromBase64(q.sound)
+    main.html(survey.getHtml(q));
     main.find(".survey button").click(handleQuestionAnswered);
 }
 
@@ -143,7 +163,7 @@ function handleQuestionAnswered () {
     //show response
     //ask if we may have another
     var question = questions[count];
-    var resps = question.resp;
+    var resps = question.responses;
     var respVal = main.find(".leich").val();
 
     $.post("/responses/", {
@@ -156,14 +176,15 @@ function handleQuestionAnswered () {
 
     var eyes = "";
 
-    respObject.eyes.forEach(function (i) {
+    respObject.leftEye.forEach(function (i) {
         eyes += i.join("");
     });
 
     $.post("/eyes/", { eyes: eyes }, function () { });
-    var response = respObject.txt;
+    var response = respObject.text;
     var cont = (count + 1) < questions.length;
     main.html(survey.response(response, cont));
+    playSoundFromBase64(respObject.sound);
     setTimeout(function () {
         if (cont) {
             count++;
@@ -183,8 +204,10 @@ function handleQuestionAnswered () {
  * Initialize the survey, first showing the greeting.
  */
 $(function () {
-    $.get("/questions/", function (qs) {
-        questions = qs;
+    $.get("/surveys/", function (surveyData) {
+        thisSurvey = surveyData;
+
+        questions = arrayify(surveyData.questions);
         main = $("#main-container");
         greetings();
     });

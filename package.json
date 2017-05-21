@@ -34,6 +34,7 @@
     "async": "^2.4.0",
     "body-parser": "^1.17.1",
     "express": "^4.14.1",
-    "mongodb": "^2.2.26"
+    "mongodb": "^2.2.26",
+    "request": "^2.81.0"
   }
 }

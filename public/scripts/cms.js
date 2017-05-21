@@ -163,7 +163,7 @@ function Survey () {
     //Maybe a survey should have a name
     that.getModel = function (cb) {
         var questionGetters = that.getQuestionModels();
-        async.parallel(questionGetters, function (questionModels) {
+        async.parallel(questionGetters, function (err, questionModels) {
             async.parallel({
                 greetingsSound: getFileInputBlobWrapper(that.$greetingsSound),
                 anotherQuestionSound: getFileInputBlobWrapper(that.$anotherQuestionSound),
@@ -289,7 +289,7 @@ function Question () {
         var responses = that.getResponseModels();
         getBase64FromFileInput(that.$questionSound, function (err, qSound) {
             async.parallel(responses, function (err, results) {
-                cb({
+                cb(null, {
                     sound: qSound || that.$questionSoundHid.val(),
                     text: that.$questionText.val(),
                     responses: results
