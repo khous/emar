@@ -24,11 +24,24 @@ function checkInternet(cb) {
 }
 
 var SerialPort = require("serialport");
+const exec = require('child_process').exec;
 var port = new SerialPort("/dev/ttyACM0", {
     baudRate: 9600
 });
 
 DB(function (err, db) {
+    var proc;
+
+
+    app.post("/record/", function () {
+         var d = new Date();
+        proc = exec("avcon -f video4linux2 -r 25 -i /dev/video0 -f alsa -i plughw:U0x460x825 -y ./videos/" + d.toString()  + "-webcam.avi",
+            function (error, stdout, stderr) { });
+    });
+
+    app.post("/stop-record/", function () {
+        proc.kill("SIGTERM");
+    });
 
     /**
      * Get route for home page. This will be a single page app.
