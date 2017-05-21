@@ -98,7 +98,7 @@ function greetings () {
     });
 
     main.find("button.no").click(function () {
-        endSurvey("That's okay. Find me later if you feel like talking.");
+        endSurvey(thisSurvey.valediction);
     });
 
     //HI can I axe you a question?
@@ -111,7 +111,7 @@ function greetings () {
  */
 function askQuestion () {
     var q = questions[count];
-    playSoundFromBase64(q.sound)
+    playSoundFromBase64(q.sound);
     main.html(survey.getHtml(q));
     main.find(".survey button").click(handleQuestionAnswered);
 }
@@ -128,6 +128,7 @@ function map (i_end, out_end, i_value) {
  */
 function endSurvey (msg) {
     count = 0;
+    playSoundFromBase64(thisSurvey.valedictionSound);
     main.html(msg);
 
     setTimeout(function () {
@@ -139,16 +140,17 @@ function endSurvey (msg) {
  * Respond when the user accepts answering another question
  */
 function another () {
+    playSoundFromBase64(thisSurvey.anotherQuestionSound);
     main.find(".survey").html(
-        "Thanks for sharing that with me. Would you like to answer another question? <br />" +
-        "<button class='yes btn btn-default'>Yes</button><button class='no btn btn-default'>No</button>"
+        `${thisSurvey.anotherQuestionText}<br /> 
+        <button class='yes btn btn-default'>Yes</button><button class='no btn btn-default'>No</button>`
     );
 
     main.find(".yes").click(function () {
         askQuestion();
     });
     main.find(".no").click(function () {
-        endSurvey("Thanks for sharing that with me, I hope to see you again.");
+        endSurvey(thisSurvey.valediction);
         //do some set timeout to show greeting again, also show greeting again on screen touch. Whichever is first
         //blow away screen listener when timeout expires and cancel timeout when screen is touched
         //Thank for sharing with me
@@ -191,7 +193,7 @@ function handleQuestionAnswered () {
             another();
             //hookup to yes and no
         } else {
-            endSurvey("Thanks for sharing that with me, I hope to see you again.");
+            endSurvey(thisSurvey.valediction);
             //do some set timeout to show greeting again, also show greeting again on screen touch. Whichever is first
             //blow away screen listener when timeout expires and cancel timeout when screen is touched
             //Thank for sharing with me
