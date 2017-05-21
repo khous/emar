@@ -343,7 +343,6 @@ function Response () {
 
     that.destroy = function () {
         that.$el.remove();
-        that.onRemove();
     };
 
     that.onRemove = function () { };
