@@ -44,6 +44,7 @@ DB(function (err, db) {
         if (proc) {
             proc.kill("SIGINT");
             proc = undefined;
+            console.log("killing it...");
         }
     });
 
