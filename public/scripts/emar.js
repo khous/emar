@@ -87,7 +87,7 @@ function greetings () {
     main.find("button.hi").click(function () {
         //Unhide greet text
         playSoundFromBase64(thisSurvey.greetingsSound);
-
+        $.post("/record/", function () {});
         main.find(".greeting-button").hide();
         main.find(".greeting-text").removeClass("hidden");//play greeting audioi
     });
@@ -130,6 +130,7 @@ function endSurvey (msg) {
     count = 0;
     playSoundFromBase64(thisSurvey.valedictionSound);
     main.html(msg);
+    $.post("/stop-record/", function () {});
 
     setTimeout(function () {
         greetings();
