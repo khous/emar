@@ -341,6 +341,11 @@ function Response () {
         return el;
     };
 
+    that.destroy = function () {
+        that.$el.remove();
+        that.onRemove();
+    };
+
     that.onRemove = function () { };
 
     //Each response has text, sound and eyes as an expression
