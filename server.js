@@ -23,6 +23,11 @@ function checkInternet(cb) {
     });
 }
 
+var SerialPort = require("serialport");
+var port = new SerialPort("/dev/ttyACM0", {
+    baudRate: 9600
+});
+
 DB(function (err, db) {
 
     /**
@@ -69,6 +74,7 @@ DB(function (err, db) {
         }
 
         //TODO, josh put code here. serialData should be in the correct form according to your changes to the readme
+        port.write(eyes);
         //Do a sys call to set the EYES based on this array
         return res.status(200).json({ status: "SUCCESS" });
     });
