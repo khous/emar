@@ -33,19 +33,22 @@ DB(function (err, db) {
     var proc;
 
 
-    app.post("/record/", function () {
+    app.post("/record/", function (req, res) {
          var d = new Date();
         proc = exec("avconv -f video4linux2 -r 25 -i /dev/video0 -f alsa -i plughw:U0x46d0x825 -y ./videos/" +
             d.toISOString()  + "-webcam.avi",
             function (error, stdout, stderr) { });
+        res.status(200).json({});
     });
 
-    app.post("/stop-record/", function () {
+    app.post("/stop-record/", function (req, res) {
         if (proc) {
             proc.kill("SIGINT");
             proc = undefined;
             console.log("killing it...");
         }
+        res.status(200).json({});
+
     });
 
     /**
