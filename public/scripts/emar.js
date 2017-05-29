@@ -170,7 +170,8 @@ function handleQuestionAnswered () {
     var respVal = main.find(".leich").val();
 
     $.post("/responses/", {
-        _id: question._id,
+        dateTime: new Date(),
+        question: question.text,
         value: +respVal
     }, function () { });
 
