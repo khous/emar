@@ -4,10 +4,6 @@
 var $ = require("jquery");
 var async = require("async");
 
-//TODO Set soundfiles in set model
-//TODO test removing qs and responses
-//TODO Test the saving after removal
-
 /**
  * Turn thing into an array if it isn't
  * @param thing
@@ -101,7 +97,7 @@ function Survey () {
     this.render = function () {
         var el = that.$el = $(
             "<div class='survey'>" +
-                "<button class='save-butt'>Save <span class='saving'>|/--\</span></button>" +
+                "<button class='save-butt'>Save <span class='saving'></span></button>" +
                 "<div class='survey-specs'>" +
                     "<input class='greetings' placeholder='Greeting Text' type='text'>" +
                     "<input class='greetings-sound' type='file'>" +
@@ -112,8 +108,16 @@ function Survey () {
                     "<input class='valediction'  placeholder='Valediction Text' type='text'>" +
                     "<input class='valediction-sound' type='file'>" +
                     "<input class='valediction-sound-hid' type='hidden'>" +
+                    "<input class='after-question' placeholder='After question pause (ms)' type='number'>" +
+                    "<input class='after-survey' placeholder='After survey pause (ms)' type='number'>" +
+                    "<h4>Greeting Eyes</h4>" +
+                    "<h6>Expressed during greeting</h6>" +
+                    "<div class='greeting-eyes'></div>" +
+                    "<h4>Resting Eyes</h4>" +
+                    "<h6>Expressed before active survey and during questions</h6>" +
+                    "<div class='resting-eyes'></div>" +
                     "<div class='questions'>" +
-                    "<h4>Questions</h4>" +
+                        "<h4>Questions</h4>" +
                     "</div>" +
                     "<button class='add-more-butt'>Add Question</button>" +
                 "</div>" +
@@ -141,6 +145,26 @@ function Survey () {
         that.$addMoreButt.click(function () {
             that.addQuestion();
         });
+
+        that.$afterQuestionDuration = el.find(".after-question");
+        that.$afterSurveyDuration = el.find(".after-survey");
+        that.$restingEyes = el.find(".resting-eyes");
+        that.$greetingEyes = el.find(".greeting-eyes");
+
+        that.restingLeftEye = new Eye();
+        that.restingRightEye = new Eye();
+
+        that.$restingEyes
+            .append(that.restingLeftEye.render())
+            .append(that.restingRightEye.render());
+
+        that.greetingLeftEye = new Eye();
+        that.greetingRightEye = new Eye();
+
+        that.$greetingEyes
+            .append(that.greetingLeftEye.render())
+            .append(that.greetingRightEye.render());
+
 
         return el;
     };
@@ -177,7 +201,13 @@ function Survey () {
                     anotherQuestionText:    that.$anotherQuestionInput.val(),
                     anotherQuestionSound:   result.anotherQuestionSound || that.$anotherQuestionSoundHid.val(),
                     valediction:            that.$valedictionInput.val(),
-                    valedictionSound:       result.valedictionSound || that.$valedictionSoundHid.val()
+                    valedictionSound:       result.valedictionSound || that.$valedictionSoundHid.val(),
+                    afterQuestionDuration:  that.$afterQuestionDuration.val(),
+                    afterSurveyDuration:    that.$afterSurveyDuration.val(),
+                    restingLeftEye:         that.restingLeftEye.getModel(),
+                    restingRightEye:        that.restingRightEye.getModel(),
+                    greetingLeftEye:        that.greetingLeftEye.getModel(),
+                    greetingRightEye:       that.greetingRightEye.getModel()
                 });
             });
 
@@ -195,6 +225,12 @@ function Survey () {
         that.$greetingsSoundHid.val(m.greetingsSound);
         that.$valedictionInput.val(m.valediction);
         that.$valedictionSoundHid.val(m.valedictionSound);
+        that.$afterQuestionDuration.val(m.afterQuestionDuration);
+        that.$afterSurveyDuration.val(m.afterSurveyDuration);
+        that.restingLeftEye.setModel(m.restingLeftEye);
+        that.restingRightEye.setModel(m.restingRightEye);
+        that.greetingLeftEye.setModel(m.greetingLeftEye);
+        that.greetingRightEye.setModel(m.greetingRightEye);
         //"";
         //"Stress Survey",
         arrayify(m.questions).forEach(function (q) {

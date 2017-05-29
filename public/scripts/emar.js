@@ -23,60 +23,20 @@ function playSoundFromBase64 (snd) {
     return aud;
 }
 
-/*var allOn = [
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1]
-];*/
-/*
+function expressEyes (lEye, rEye) {
+    var eyes = "";
 
-var responses = [
-    {
-        txt: "Oh no, I'm sorry to hear that.",
-        eyes: allOn
-    }, {
-        txt: "I'm feeling about the same.",
-        eyes: allOn
-    }, {
-        txt: "Glad to hear that.",
-        eyes: allOn
-    }, {
-        txt: "Glad to hear that.",
-        eyes: allOn
-    }
-];
-*/
+    lEye.forEach(function (i) {
+        eyes += i.join("");
+    });
 
-/**
- * Though this is static, this is a good starting point for how these can be stored on the backend. In addition to what's
- * there currently, we need urls to sound files. I guess that will be per response.
- * @type {[*]}
- */
-/*
-var questions = [{//XHR get dis
-    eyes: allOn,
-    q: "How stressed do you feel right now?",
-    resp: [//This one is slightly different from the others. Mainly it's inverted.
-        { txt: "No stress, That's great to hear!", eyes: allOn },
-        { txt: "Glad to hear that.", eyes: allOn },
-        { txt: "I'm feeling about the same.", eyes: allOn },
-        { txt: "Oh no, I'm sorry to hear that.", eyes: allOn }
-    ]
-}, {
-    eyes: allOn,
-    q: "What is your energy level right now?",
-    resp: responses
-}, {
-    eyes: allOn,
-    q: "How is your mood right now?",
-    resp: responses
-}];
-*/
+    rEye.forEach(function (i) {
+        eyes += i.join("");
+    });
+
+    $.post("/eyes/", { eyes: eyes }, function () { });
+}
+
 
 /**
  * Display the greeting view.
@@ -86,6 +46,7 @@ function greetings () {
     main.html(survey.greeting(thisSurvey));
     main.find("button.hi").click(function () {
         //Unhide greet text
+        expressEyes(survey.greetingLeftEye, survey.greetingRightEye);
         playSoundFromBase64(thisSurvey.greetingsSound);
         $.post("/record/", function () {});
         main.find(".greeting-button").hide();
@@ -111,6 +72,7 @@ function greetings () {
  */
 function askQuestion () {
     var q = questions[count];
+    expressEyes(survey.restingLeftEye, survey.restingRightEye);
     playSoundFromBase64(q.sound);
     main.html(survey.getHtml(q));
     main.find(".survey button").click(handleQuestionAnswered);
@@ -134,13 +96,14 @@ function endSurvey (msg) {
 
     setTimeout(function () {
         greetings();
-    }, 3000);
+    }, survey.afterSurveyDuration || 3000);
 }
 
 /**
  * Respond when the user accepts answering another question
  */
 function another () {
+    expressEyes(survey.restingLeftEye, survey.restingRightEye);
     playSoundFromBase64(thisSurvey.anotherQuestionSound);
     main.find(".survey").html(
         `${thisSurvey.anotherQuestionText}<br /> 
@@ -178,13 +141,8 @@ function handleQuestionAnswered () {
     var responseValue = map(99, resps.length - 1, respVal);
     var respObject = resps[responseValue];
 
-    var eyes = "";
+    expressEyes(respObject.leftEye, respObject.rightEye);
 
-    respObject.leftEye.forEach(function (i) {
-        eyes += i.join("");
-    });
-
-    $.post("/eyes/", { eyes: eyes }, function () { });
     var response = respObject.text;
     var cont = (count + 1) < questions.length;
     main.html(survey.response(response, cont));
@@ -200,7 +158,7 @@ function handleQuestionAnswered () {
             //blow away screen listener when timeout expires and cancel timeout when screen is touched
             //Thank for sharing with me
         }
-    }, 3000);
+    }, survey.afterQuestionDuration ||  3000);
 
 }
 

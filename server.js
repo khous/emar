@@ -94,8 +94,8 @@ DB(function (err, db) {
     app.post("/eyes/", function (req, res) {
         var eyes = req.body.eyes;
 
-        if (eyes.length !== 64) {
-            return res.status(400).json({ err: "Eyes must be 64 numbers" });
+        if (eyes.length !== 128) {
+            return res.status(400).json({ err: "Eyes must be 128 numbers" });
         }
 
 
