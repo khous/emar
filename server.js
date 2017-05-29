@@ -28,9 +28,9 @@ var SerialPort = require("serialport");
 const exec = require('child_process').exec;
 const CSV_PAGE_SIZE = 50;
 
-var port = new SerialPort("/dev/ttyACM0", {
+/*var port = new SerialPort("/dev/ttyACM0", {
     baudRate: 9600
-});
+});*/
 
 DB(function (err, db) {
     var proc;
@@ -38,9 +38,9 @@ DB(function (err, db) {
 
     app.post("/record/", function (req, res) {
         var d = new Date();
-        proc = exec("avconv -f video4linux2 -r 25 -i /dev/video0 -f alsa -i plughw:U0x46d0x825 -y ./videos/gdrivefs/survey-results" +
+        /*proc = exec("avconv -f video4linux2 -r 25 -i /dev/video0 -f alsa -i plughw:U0x46d0x825 -y ./videos/gdrivefs/survey-results" +
         d.toISOString()  + "-webcam.avi",
-        function (error, stdout, stderr) { });
+        function (error, stdout, stderr) { });*/
 
         res.status(200).json({});
     });
@@ -99,7 +99,7 @@ DB(function (err, db) {
         }
 
 
-        port.write(eyes);
+/*        port.write(eyes);*/
         //Do a sys call to set the EYES based on this array
         return res.status(200).json({ status: "SUCCESS" });
     });

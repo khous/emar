@@ -46,7 +46,7 @@ function greetings () {
     main.html(survey.greeting(thisSurvey));
     main.find("button.hi").click(function () {
         //Unhide greet text
-        expressEyes(survey.greetingLeftEye, survey.greetingRightEye);
+        expressEyes(thisSurvey.greetingLeftEye, thisSurvey.greetingRightEye);
         playSoundFromBase64(thisSurvey.greetingsSound);
         $.post("/record/", function () {});
         main.find(".greeting-button").hide();
@@ -72,7 +72,7 @@ function greetings () {
  */
 function askQuestion () {
     var q = questions[count];
-    expressEyes(survey.restingLeftEye, survey.restingRightEye);
+    expressEyes(thisSurvey.restingLeftEye, thisSurvey.restingRightEye);
     playSoundFromBase64(q.sound);
     main.html(survey.getHtml(q));
     main.find(".survey button").click(handleQuestionAnswered);
@@ -96,14 +96,14 @@ function endSurvey (msg) {
 
     setTimeout(function () {
         greetings();
-    }, survey.afterSurveyDuration || 3000);
+    }, thisSurvey.afterSurveyDuration || 3000);
 }
 
 /**
  * Respond when the user accepts answering another question
  */
 function another () {
-    expressEyes(survey.restingLeftEye, survey.restingRightEye);
+    expressEyes(thisSurvey.restingLeftEye, thisSurvey.restingRightEye);
     playSoundFromBase64(thisSurvey.anotherQuestionSound);
     main.find(".survey").html(
         `${thisSurvey.anotherQuestionText}<br /> 
@@ -158,7 +158,7 @@ function handleQuestionAnswered () {
             //blow away screen listener when timeout expires and cancel timeout when screen is touched
             //Thank for sharing with me
         }
-    }, survey.afterQuestionDuration ||  3000);
+    }, thisSurvey.afterQuestionDuration ||  3000);
 
 }
 
